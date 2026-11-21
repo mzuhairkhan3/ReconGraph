@@ -4,8 +4,8 @@
 
 A professional-grade offensive-security reconnaissance platform designed for authorized penetration testing and red-team assessments. ReconGraph discovers, organizes, visualizes, and prioritizes the attack surface of web applications by transforming raw reconnaissance data into an interactive 3D attack-surface graph.
 
-> **Status:** Phases 1–5 implemented · Phase 6 (polish & expanded tests) ongoing  
-> Built as a portfolio-grade cybersecurity project with meaningful custom DSA usage.
+> **Status:** Phases 1–6 complete  
+> Portfolio-ready foundation with custom DSA, controlled recon, graph engine, prioritization, and 3D visualization.
 
 ---
 
@@ -53,6 +53,12 @@ npm install
 npm run dev                  # http://localhost:5173
 ```
 
+### Helper script
+```bash
+./scripts/dev.sh backend     # build + run C++ server
+./scripts/dev.sh frontend    # start Vite
+```
+
 ### Example scan
 ```bash
 curl -X POST http://localhost:8080/api/scan \
@@ -60,10 +66,7 @@ curl -X POST http://localhost:8080/api/scan \
   -d '{"url":"http://localhost:3000","max_depth":2,"max_requests":20}'
 ```
 
-Then open the Attack Surface Map in the UI or:
-```bash
-curl http://localhost:8080/api/graph
-```
+Full walkthrough: **[docs/user_guide/DEMO.md](docs/user_guide/DEMO.md)**
 
 ---
 
@@ -75,10 +78,21 @@ ReconGraph/
 ├── backend/           # C++ engine + REST API
 ├── dsa/               # Custom data structures & algorithms
 ├── database/          # Schema reference
-├── docs/              # Architecture & algorithm notes
-├── tests/             # (expanding)
-└── scripts/
+├── docs/              # Architecture, demo guide, algorithms
+├── tests/             # Integration checklist + benchmark notes
+└── scripts/           # dev helpers
 ```
+
+---
+
+## Documentation
+
+| Doc | Description |
+|-----|-------------|
+| [Demo Guide](docs/user_guide/DEMO.md) | Step-by-step demo for portfolio / interviews |
+| [Architecture](docs/architecture/OVERVIEW.md) | System design and data flow |
+| [DSA Overview](docs/algorithms/dsa_overview.md) | Custom structures and complexity |
+| [Integration Checklist](tests/integration/README.md) | Manual verification steps |
 
 ---
 
