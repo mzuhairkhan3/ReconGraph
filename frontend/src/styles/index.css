@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Martel', serif;
+  }
+
+  body {
+    @apply bg-surface text-text-primary min-h-screen;
+  }
+
+  /* Custom scrollbar for dark theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-surface-100;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-300 rounded;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-border;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-accent-cyan/10 text-accent-cyan border border-accent-cyan/30 
+           rounded hover:bg-accent-cyan/20 transition-colors font-medium tracking-wide;
+  }
+
+  .card {
+    @apply bg-surface-50 border border-border rounded-lg p-4;
+  }
+}
