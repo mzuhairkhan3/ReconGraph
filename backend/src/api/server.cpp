@@ -59,14 +59,19 @@ void Server::start() {
 
     // ---------- URL Normalization (demo / utility) ----------
     svr.Post("/api/normalize", [](const httplib::Request& req, httplib::Response& res) {
-        // Expect raw body as the URL string or JSON {"url": "..."}
         std::string url = req.body;
-        if (url.find("\"url\"") != std::string::npos) {
-            auto pos = url.find(":\"");
-            if (pos != std::string::npos) {
-                pos += 2;
-                auto end = url.find('"', pos);
-                if (end != std::string::npos) url = url.substr(pos, end - pos);
+        // Very lightweight extraction if body is {"url": "..."}
+        auto key_pos = url.find("\"url\"");
+        if (key_pos != std::string::npos) {
+            auto colon = url.find(':', key_pos);
+            if (colon != std::string::npos) {
+                auto q1 = url.find('"', colon + 1);
+                if (q1 != std::string::npos) {
+                    auto q2 = url.find('"', q1 + 1);
+                    if (q2 != std::string::npos) {
+                        url = url.substr(q1 + 1, q2 - q1 - 1);
+                    }
+                }
             }
         }
 
@@ -91,14 +96,14 @@ void Server::start() {
 
     // ---------- Controlled Scan ----------
     svr.Post("/api/scan", [](const httplib::Request& req, httplib::Response& res) {
-        // Very simple body parsing for Phase 2: {"url": "http://...", "max_depth": 2, "max_requests": 30}
         std::string body = req.body;
         std::string target;
         int max_depth = 2;
         int max_requests = 30;
 
-        auto extract = [&](const std::string& key) -> std::string {
-            auto pos = body.find(\"\" + key + "\"");
+        auto extract_string = [&](const std::string& key) -> std::string {
+            std::string pattern = "\"" + key + "\"";
+            auto pos = body.find(pattern);
             if (pos == std::string::npos) return {};
             pos = body.find(':', pos);
             if (pos == std::string::npos) return {};
@@ -106,17 +111,18 @@ void Server::start() {
             if (pos == std::string::npos) return {};
             if (body[pos] == '"') {
                 auto end = body.find('"', pos + 1);
+                if (end == std::string::npos) return {};
                 return body.substr(pos + 1, end - pos - 1);
             }
             auto end = body.find_first_of(",}", pos);
             return body.substr(pos, end - pos);
         };
 
-        target = extract("url");
+        target = extract_string("url");
         try {
-            std::string d = extract("max_depth");
+            std::string d = extract_string("max_depth");
             if (!d.empty()) max_depth = std::stoi(d);
-            std::string r = extract("max_requests");
+            std::string r = extract_string("max_requests");
             if (!r.empty()) max_requests = std::stoi(r);
         } catch (...) {}
 
@@ -126,23 +132,11 @@ void Server::start() {
             return;
         }
 
-        // Safety: only allow localhost / private / explicitly lab targets by default
         auto norm = core::UrlNormalizer::normalize(target);
         if (!norm) {
             res.status = 400;
             res.set_content(R"({"error": "Invalid target URL"})", "application/json");
             return;
-        }
-
-        bool is_local = (norm->host == "localhost" ||
-                         norm->host == "127.0.0.1" ||
-                         norm->host.find("192.168.") == 0 ||
-                         norm->host.find("10.") == 0 ||
-                         norm->host.find("172.") == 0);
-
-        if (!is_local) {
-            // For Phase 2 we still allow but warn heavily in response
-            // Later phases will require explicit allowlist confirmation
         }
 
         crawler::ScanConfig cfg;
@@ -151,13 +145,13 @@ void Server::start() {
         cfg.max_requests = std::max(1, std::min(max_requests, 100));
 
         crawler::ReconCollector collector(cfg);
-        auto graph = collector.run([](const std::string& msg, int pct) {
+        auto result_graph = collector.run([](const std::string& msg, int pct) {
             std::cout << "[Scan " << pct << "%] " << msg << std::endl;
         });
 
         {
             std::lock_guard<std::mutex> lock(g_mutex);
-            g_last_graph = std::make_unique<graph::AttackSurfaceGraph>(std::move(graph));
+            g_last_graph = std::make_unique<graph::AttackSurfaceGraph>(std::move(result_graph));
             g_last_stats = collector.stats();
         }
 
