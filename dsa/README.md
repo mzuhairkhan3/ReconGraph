@@ -1,43 +1,35 @@
 # Data Structures & Algorithms
 
-This directory contains **custom implementations** of core data structures and algorithms used by the ReconGraph backend.
+Custom implementations used by the ReconGraph backend. These are intentional educational + production-path structures, not thin wrappers around the STL.
 
-These are not wrappers around the C++ Standard Library. They are intentional implementations that demonstrate understanding of time/space complexity and are integrated into real application paths (endpoint storage, URL deduplication, graph traversal, prioritization, etc.).
+## Implemented Structures
 
-## Structure
+| Structure | Path | Used For |
+|-----------|------|----------|
+| **DynamicArray** | `data_structures/dynamic_array/` | Graph node storage, adjacency lists |
+| **LinkedList** | `data_structures/linked_list/` | Chronological scan events (ready) |
+| **HashTable** | `data_structures/hash_table/` | URL / endpoint deduplication (chaining + rehash) |
+| **Queue** | `data_structures/queue/` | BFS crawl frontier |
+| **Stack** | `data_structures/stack/` | DFS graph traversal |
 
-```
-dsa/
-├── data_structures/
-│   ├── dynamic_array/
-│   ├── linked_list/
-│   ├── hash_table/
-│   ├── queue/
-│   ├── stack/
-│   ├── binary_search_tree/
-│   └── priority_queue/
-├── algorithms/
-│   ├── bfs/
-│   ├── dfs/
-│   ├── sorting/
-│   ├── string_matching/
-│   └── graph_analysis/
-└── README.md
-```
+## Graph Algorithms
 
-## Usage in ReconGraph
+| Algorithm | Where | Purpose |
+|-----------|-------|---------|
+| BFS | `AttackSurfaceGraph::bfs` | Crawl order & reachability |
+| DFS | `AttackSurfaceGraph::dfs` | Alternative traversal |
 
-| Structure / Algorithm | Primary Use |
-|-----------------------|-------------|
-| Dynamic Array | Endpoint lists, graph node storage |
-| Linked List | Scan event history, chronological records |
-| Hash Table | URL/endpoint deduplication, fast lookup |
-| Queue | BFS crawling, pending page processing |
-| Stack | DFS traversal, navigation history |
-| BST / AVL | Ordered endpoint index |
-| Priority Queue | Highest-priority testing opportunities |
-| BFS / DFS | Graph traversal & reachability |
-| Sorting | Priority and discovery-time ordering |
-| String Matching | Route and parameter search |
+## Complexity (typical)
 
-Implementation and detailed complexity analysis will be added in Phase 2.
+- DynamicArray append: amortised **O(1)** (doubling strategy)
+- HashTable insert/lookup: average **O(1)**, worst **O(n)** (chaining)
+- Queue / Stack push & pop: **O(1)**
+- BFS / DFS over graph: **O(V + E)**
+
+## Why custom?
+
+1. Demonstrates real understanding of memory layout, growth strategies, and collision handling.
+2. Structures are wired into the actual crawler and graph engine, not only mentioned in docs.
+3. Makes performance trade-offs visible for coursework and portfolio discussion.
+
+See also: `docs/algorithms/dsa_overview.md` and `tests/benchmarks/`.

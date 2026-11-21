@@ -1,6 +1,6 @@
 /**
  * ReconGraph - Attack-Surface Intelligence Engine
- * Phase 2: Core Engine (DSA + Graph + Collector)
+ * Phase 6 complete – polished foundation ready for portfolio use
  */
 
 #include "api/server.hpp"
@@ -21,9 +21,9 @@ int main(int argc, char* argv[]) {
     }
 
     std::cout << "========================================" << std::endl;
-    std::cout << "  ReconGraph Backend v0.2.0" << std::endl;
+    std::cout << "  ReconGraph Backend v0.6.0" << std::endl;
     std::cout << "  Attack-Surface Intelligence Engine" << std::endl;
-    std::cout << "  Phase 2 - Core Engine" << std::endl;
+    std::cout << "  Phase 6 – Complete" << std::endl;
     std::cout << "========================================" << std::endl;
 
     recongraph::api::Server server(port);

@@ -1,35 +1,50 @@
 # Contributing to ReconGraph
 
-Thank you for your interest in contributing to ReconGraph.
+Thank you for your interest.
 
-This project is currently under active development as a structured, multi-phase portfolio project. Contributions are welcome once Phase 1–3 foundations are stable.
+ReconGraph is a structured, multi-phase cybersecurity portfolio project. The core architecture (Phases 1–6) is in place. Contributions that improve correctness, safety, documentation, or visualization quality are welcome.
 
-## Development Principles
+## Principles
 
-- Prefer clear, modular C++ and TypeScript over clever one-liners.
-- Custom DSA implementations must be used meaningfully, not just for show.
+- Prefer clear, modular C++ and TypeScript.
+- Custom DSA must remain meaningfully used, not ornamental.
 - Security and scope enforcement are non-negotiable.
-- Do not introduce stealth, credential theft, destructive, or unauthorized-access capabilities.
-- Keep the UI professional, dark, and focused on cybersecurity utility.
+- Do **not** add stealth scanning, credential theft, destructive exploits, or unauthorized access capabilities.
+- Keep the UI dark, professional, and Martel-based.
 
-## Getting Started
+## Development Setup
 
-1. Fork the repository
-2. Create a feature branch from `main`
-3. Follow the existing directory structure
-4. Ensure frontend builds (`npm run build`) and backend compiles with CMake
-5. Open a Pull Request with a clear description of changes
+See [docs/user_guide/DEMO.md](docs/user_guide/DEMO.md) for full run instructions.
 
-## Code Style
+Quick path:
 
-- **C++:** C++17/20, consistent naming, meaningful comments for complex algorithms
-- **TypeScript/React:** Functional components, typed props, Tailwind utility classes
-- Font: Martel must remain the primary typeface
+```bash
+# Backend
+cd backend && mkdir -p build && cd build && cmake .. && cmake --build . && ./recongraph_server
+
+# Frontend (new terminal)
+cd frontend && npm install && npm run dev
+```
+
+Or use the helper:
+
+```bash
+./scripts/dev.sh backend
+./scripts/dev.sh frontend
+```
+
+## Pull Requests
+
+1. Fork and branch from `main`
+2. Keep changes focused
+3. Ensure backend compiles and frontend builds
+4. Describe *what* and *why* in the PR body
+5. Note any remaining limitations honestly
 
 ## Reporting Issues
 
-Please open an issue describing the problem, expected behavior, and steps to reproduce.
+Open an issue with expected vs actual behaviour and steps to reproduce. Lab-only targets preferred in examples.
 
 ---
 
-Built with care for authorized security testing and educational purposes.
+Built for authorized security testing and education.
