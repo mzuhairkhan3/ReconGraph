@@ -1,12 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
-project(ReconGraph VERSION 0.1.0 LANGUAGES CXX)
+project(ReconGraph VERSION 0.2.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Options
 option(RECONGRAPH_BUILD_TESTS "Build tests" OFF)
 
 # Fetch cpp-httplib (header-only)
@@ -25,23 +24,27 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../dsa
 )
 
-# Source files (Phase 1 - minimal)
+# Source files – Phase 2
 set(RECONGRAPH_SOURCES
     src/main.cpp
     src/api/server.cpp
+    src/core/url_normalizer.cpp
+    src/graph/attack_surface_graph.cpp
+    src/crawler/recon_collector.cpp
 )
 
-# Executable
 add_executable(recongraph_server ${RECONGRAPH_SOURCES})
 
 target_link_libraries(recongraph_server PRIVATE httplib::httplib)
 
-# Platform-specific notes
 if(WIN32)
     target_link_libraries(recongraph_server PRIVATE ws2_32)
 endif()
 
-# Install
+# On some platforms regex + threads may need explicit linking
+find_package(Threads REQUIRED)
+target_link_libraries(recongraph_server PRIVATE Threads::Threads)
+
 install(TARGETS recongraph_server RUNTIME DESTINATION bin)
 
-message(STATUS "ReconGraph backend configured (Phase 1 foundation)")
+message(STATUS "ReconGraph backend configured (Phase 2 – Core Engine)")
